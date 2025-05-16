@@ -1,0 +1,20 @@
+* {
+    background-color: rgb(30, 23, 50);
+    color: white;
+    font-family: monospace;
+}
+
+.terminal-container {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+input {
+    border: none;
+    width: auto;
+}
+
+input:focus {
+    outline: none;
+}
