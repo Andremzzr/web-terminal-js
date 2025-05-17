@@ -10,13 +10,33 @@ const ROOTPATH = {
 }
 
 const COMMANDS = {
-    "mkdir": function(folderName){
-        ROOTPATH[currentPath][folderName] = {} 
+    "mkdir": function (folderName) {
+        const currentPathArray = currentPath.split("/")
+          const parentFolder = currentPathArray.reduce((current, key) => {
+            if (!current[key]) {
+                current[key] = {};
+            }
+            return current[key];
+        }, ROOTPATH);
+        
+        parentFolder[folderName] = {};
     },
 
-    "cd": function( folderPath) {
-        folderPath.split("/").forEach(folder => {
-            if( ROOTPATH[currentPath][folder] ) {
+    "cd": function( folderPath ) {
+        const currentPathArray = currentPath.split("/")
+          const parentFolder = currentPathArray.reduce((current, key) => {
+            if (!current[key]) {
+                current[key] = {};
+            }
+            return current[key];
+        }, ROOTPATH);
+        
+        folderPath.split("/").forEach( folder => {
+            if (folder == "." ) {
+                return
+            }
+
+            if( parentFolder[folder] ) {
                 currentPath += `/${folder}`
             }
             
@@ -32,13 +52,15 @@ function executeCommands(e) {
 
         const command = COMMANDS[input[0]];
 
-        if( !command ) return
+        if( !command ) {
+            createNewLine()
+        }
 
         command(input[1])
         createNewLine()
 
         console.log(ROOTPATH)
-        
+
     }
 }
 function disableLastInput() {
