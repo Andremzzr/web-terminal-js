@@ -33,7 +33,13 @@ const COMMANDS = {
             }
             
         })
+    },
+
+    "clear": function () {
+        const lines = document.querySelectorAll(".terminal-line");
+        lines.forEach(line => line.remove());
     }
+
 }
 
 function getCurrentPathLocation() {
@@ -54,7 +60,8 @@ function executeCommands(e) {
         const command = COMMANDS[input[0]];
 
         if( !command ) {
-            createNewLine()
+            createNewLine();
+            return
         }
 
         command(input[1])
@@ -67,7 +74,9 @@ function executeCommands(e) {
 function disableLastInput() {
     const terminalLines = document.querySelectorAll('.terminal-line');
     const lastLine = terminalLines[terminalLines.length - 1];
-    lastLine.querySelector('input').disabled = true;
+    if ( lastLine ){
+        lastLine.querySelector('input').disabled = true;
+    }
 }
 
 function createNewLine() {
@@ -87,6 +96,8 @@ function createNewLine() {
     line.appendChild(span);
     line.appendChild(input);
     container.appendChild(line);
+    input.focus()
+
 }
 
 
@@ -96,4 +107,4 @@ inputElement.addEventListener("keypress", executeCommands );
 
 
 
-(() => { document.getElementsByClassName("dir-name")[0].innerHTML = currentPath })();
+(() => { document.getElementsByClassName("dir-name")[0].innerHTML = currentPath; inputElement.focus() })();
