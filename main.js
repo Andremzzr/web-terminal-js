@@ -11,28 +11,20 @@ const ROOTPATH = {
 
 const COMMANDS = {
     "mkdir": function (folderName) {
-        const currentPathArray = currentPath.split("/")
-          const parentFolder = currentPathArray.reduce((current, key) => {
-            if (!current[key]) {
-                current[key] = {};
-            }
-            return current[key];
-        }, ROOTPATH);
-        
+        const parentFolder = getCurrentPathLocation()
         parentFolder[folderName] = {};
     },
 
     "cd": function( folderPath ) {
-        const currentPathArray = currentPath.split("/")
-          const parentFolder = currentPathArray.reduce((current, key) => {
-            if (!current[key]) {
-                current[key] = {};
-            }
-            return current[key];
-        }, ROOTPATH);
+        const parentFolder = getCurrentPathLocation()
         
         folderPath.split("/").forEach( folder => {
             if (folder == "." ) {
+                return
+            }
+
+            if (folder == "..") {
+                currentPath = currentPath.split("/").slice(0, -1).join("/")
                 return
             }
 
@@ -42,6 +34,15 @@ const COMMANDS = {
             
         })
     }
+}
+
+function getCurrentPathLocation() {
+    return currentPath.split("/").reduce((current, key) => {
+        if (!current[key]) {
+            current[key] = {};
+        }
+        return current[key];
+    }, ROOTPATH);
 }
 
 function executeCommands(e) {
