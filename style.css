@@ -5,6 +5,10 @@
     font-size: 18px;
 }
 
+body {
+    padding: 20px;
+}
+
 .terminal-container {
     display: flex;
     flex-direction: column;
@@ -14,11 +18,11 @@
 
 .dir-name {
     margin-right: 5px;
+    color: rgb(39, 172, 59);
 }
 
 input {
     border: none;
-    width: auto;
 }
 
 input:focus {

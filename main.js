@@ -1,13 +1,14 @@
 const inputElement = document.getElementById("input");
 const terminalElement = document.getElementsByClassName("terminal-container")[0];
 
-let currentPath = "andre"
+let currentPath = "user"
 
 const ROOTPATH = {
-    "andre" : {
+    "user" : {
 
     }
 }
+
 
 const COMMANDS = {
     "mkdir": function (folderName) {
@@ -46,7 +47,7 @@ const COMMANDS = {
         const container = document.getElementsByClassName('terminal-container')[0];
         const line = document.createElement('div');
         line.className = 'terminal-line';
-        line.innerHTML = currentDirKeys.length > 0 ? currentDirKeys.join("-") : "no folders on this dir"
+        line.innerHTML = currentDirKeys.length > 0 ? currentDirKeys.join("<br>") : "no folders on this dir"
         container.append(line)
     }
 
