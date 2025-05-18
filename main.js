@@ -3,6 +3,9 @@ const terminalElement = document.getElementsByClassName("terminal-container")[0]
 
 let currentPath = "user"
 
+const commandHistory = []
+let commandHistoryIndex = 0
+
 const ROOTPATH = {
     "user" : {
 
@@ -13,7 +16,6 @@ const ROOTPATH = {
 const COMMANDS = {
     "mkdir": function (folderName) {
         const parentFolder = getCurrentPathLocation()
-        console.log(parentFolder)
         parentFolder[folderName] = {};
     },
 
@@ -62,6 +64,7 @@ const COMMANDS = {
 
 }
 
+
 function getCurrentPathLocation() {
     return currentPath.split("/").reduce((current, key) => {
         if (!current[key]) {
@@ -71,25 +74,51 @@ function getCurrentPathLocation() {
     }, ROOTPATH);
 }
 
-function executeCommands(e) {
+function executeInput( value ) {
+    if ( !value ) return;
+    const input = value.split(" ")
 
-    if (e.key == "Enter") {
-        if ( !this.value ) return;
-        const input = this.value.split(" ")
+    const command = COMMANDS[input[0]];
 
-        const command = COMMANDS[input[0]];
-
-        if( !command ) {
-            createNewLine();
-            return
-        }
-
-        command(input[1])
-        createNewLine()
-
-        console.log(ROOTPATH)
-
+    if( !command ) {
+        createNewLine();
+        commandHistory.push(value)
+        commandHistoryIndex = commandHistory.length
+        return
     }
+
+    command(input[1])
+    createNewLine()
+    commandHistory.push(value)
+    commandHistoryIndex = commandHistory.length
+
+    console.log(ROOTPATH)
+} 
+
+function executeCommands(e) { 
+    if (e.key == "Enter") {
+        executeInput(this.value)
+    }
+
+    if (e.key == "ArrowUp") {
+        if (commandHistory.length > 0) {
+            commandHistoryIndex -= 1
+            const inputs = document.querySelectorAll('.input');
+            const lastInput = inputs[inputs.length - 1];
+
+            lastInput.value = commandHistory[commandHistoryIndex] ? commandHistory[commandHistoryIndex] : ""
+        }
+    }
+
+        if (e.key == "ArrowDown") {
+            if (commandHistory.length > 0 && commandHistoryIndex < commandHistory.length) {
+                commandHistoryIndex += 1
+                const inputs = document.querySelectorAll('.input');
+                const lastInput = inputs[inputs.length - 1];
+                lastInput.value = commandHistory[commandHistoryIndex] ? commandHistory[commandHistoryIndex] : ""
+            }
+    }
+
 }
 function disableLastInput() {
     const inputs = document.querySelectorAll('.input');
@@ -111,7 +140,8 @@ function createNewLine() {
 
     const input = document.createElement('input');
     input.type = 'text';
-    input.addEventListener("keypress", executeCommands);
+    input.classList.add("input")
+    input.addEventListener("keydown", executeCommands);
 
     line.appendChild(span);
     line.appendChild(input);
@@ -122,7 +152,7 @@ function createNewLine() {
 
 
 
-inputElement.addEventListener("keypress", executeCommands );
+inputElement.addEventListener("keydown", executeCommands );
 
 
 
