@@ -12,6 +12,7 @@ const ROOTPATH = {
 const COMMANDS = {
     "mkdir": function (folderName) {
         const parentFolder = getCurrentPathLocation()
+        console.log(parentFolder)
         parentFolder[folderName] = {};
     },
 
@@ -38,6 +39,15 @@ const COMMANDS = {
     "clear": function () {
         const lines = document.querySelectorAll(".terminal-line");
         lines.forEach(line => line.remove());
+    },
+
+    "ls": function() {
+        const currentDirKeys = Object.keys(getCurrentPathLocation());
+        const container = document.getElementsByClassName('terminal-container')[0];
+        const line = document.createElement('div');
+        line.className = 'terminal-line';
+        line.innerHTML = currentDirKeys.length > 0 ? currentDirKeys.join("-") : "no folders on this dir"
+        container.append(line)
     }
 
 }
@@ -72,10 +82,10 @@ function executeCommands(e) {
     }
 }
 function disableLastInput() {
-    const terminalLines = document.querySelectorAll('.terminal-line');
-    const lastLine = terminalLines[terminalLines.length - 1];
-    if ( lastLine ){
-        lastLine.querySelector('input').disabled = true;
+    const inputs = document.querySelectorAll('.input');
+    const lastInput = inputs[inputs.length - 1];
+    if ( lastInput ){
+        lastInput.disabled = true;
     }
 }
 
