@@ -49,6 +49,15 @@ const COMMANDS = {
         line.className = 'terminal-line';
         line.innerHTML = currentDirKeys.length > 0 ? currentDirKeys.join("<br>") : "no folders on this dir"
         container.append(line)
+    },
+
+    "help": function() {
+        const commandsList = Object.keys(COMMANDS);
+        const container = document.getElementsByClassName('terminal-container')[0];
+        const line = document.createElement('div');
+        line.className = 'terminal-line';
+        line.innerHTML = commandsList.join("<br>") 
+        container.append(line)
     }
 
 }
