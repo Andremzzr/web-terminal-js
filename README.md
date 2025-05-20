@@ -5,9 +5,9 @@ This is a simple Linux-style terminal emulator built using **HTML**, **CSS**, an
 ## Project Structure
 
 ```
-    ├── index.html # Contains the basic terminal layout
-    ├── style.css # Styles for the terminal interface
-    └── main.js # All the logic for handling commands and directory structure
+├── index.html # Contains the basic terminal layout
+├── style.css # Styles for the terminal interface
+└── main.js # All the logic for handling commands and directory structure
 ```
 
 ## Features
@@ -16,6 +16,8 @@ This is a simple Linux-style terminal emulator built using **HTML**, **CSS**, an
 - `cd <folder>`: Navigates into a folder. Supports `..` to go up one level and `.` for current directory.
 - `ls`: Lists folders in the current directory.
 - `clear`: Clears all output from the terminal.
+- `help`: Displays a list of available commands.
+- **Command History**: Navigate through previously entered commands using the up and down arrow keys.
 
 ## Getting Started
 
@@ -33,3 +35,4 @@ This is a simple Linux-style terminal emulator built using **HTML**, **CSS**, an
 
 - The filesystem is simulated with JavaScript objects and resets on page refresh.
 - All commands and file structure logic are handled in `main.js`.
+- Command history is maintained during the session and can be accessed with the up/down arrow keys.
