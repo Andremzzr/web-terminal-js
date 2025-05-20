@@ -49,7 +49,7 @@ const COMMANDS = {
         const container = document.getElementsByClassName('terminal-container')[0];
         const line = document.createElement('div');
         line.className = 'terminal-line';
-        line.innerHTML = currentDirKeys.length > 0 ? currentDirKeys.join("<br>") : "no folders on this dir"
+        line.innerHTML = currentDirKeys.length > 0 ? ".<br>..<br>" + currentDirKeys.join("<br>") : "no folders on this dir"
         container.append(line)
     },
 
@@ -102,7 +102,7 @@ function executeCommands(e) {
     }
 
     if (e.key == "ArrowUp") {
-        if (commandHistory.length > 0 ) {
+        if (commandHistory.length > 0 && commandHistoryIndex >= 1) {
             commandHistoryIndex -= 1
             console.log(commandHistoryIndex)
             const inputs = document.querySelectorAll('.input');
@@ -113,7 +113,7 @@ function executeCommands(e) {
     }
 
         if (e.key == "ArrowDown") {
-            if (commandHistory.length > 0 && commandHistoryIndex >= 0) {
+            if (commandHistory.length > 0 && commandHistoryIndex < commandHistory.length) {
                 commandHistoryIndex += 1
                 console.log(commandHistoryIndex)
                 const inputs = document.querySelectorAll('.input');
