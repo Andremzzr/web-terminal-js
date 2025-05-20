@@ -41,7 +41,6 @@ class Terminal {
     }
     
     init() {
-        // Terminal HTML content
   const terminalHTML = `
         <div class="terminal-line">
             Welcome to Webuntu v4.0.4 :P </br> ** Documentation: <a target='_blank' href='https://github.com/Andremzzr/web-terminal-js'>https://github.com/Andremzzr/web-terminal-js </a>
