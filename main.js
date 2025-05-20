@@ -104,7 +104,6 @@ function executeCommands(e) {
     if (e.key == "ArrowUp") {
         if (commandHistory.length > 0 && commandHistoryIndex >= 1) {
             commandHistoryIndex -= 1
-            console.log(commandHistoryIndex)
             const inputs = document.querySelectorAll('.input');
             const lastInput = inputs[inputs.length - 1];
 
@@ -115,7 +114,6 @@ function executeCommands(e) {
         if (e.key == "ArrowDown") {
             if (commandHistory.length > 0 && commandHistoryIndex < commandHistory.length) {
                 commandHistoryIndex += 1
-                console.log(commandHistoryIndex)
                 const inputs = document.querySelectorAll('.input');
                 const lastInput = inputs[inputs.length - 1];
                 lastInput.value = commandHistory[commandHistoryIndex] ? commandHistory[commandHistoryIndex] : ""
