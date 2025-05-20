@@ -203,8 +203,12 @@ class Terminal {
     }
     
     help() {
-        const commandsList = Object.keys(this.commands);
-        this.createMessage(commandsList.join("<br>"));
+        const helpMessage = `mkdir: Creates a new directory (folder) in the file system. <br>
+                            cd: Changes the current working directory. It allows you to navigate through the file system by moving between directories.<br>
+                            clear: Clears the terminal screen, removing all previously displayed content and giving you a clean workspace.<br>
+                            ls: Lists the contents of the current directory (or a specified directory), showing files and subdirectories.<br>
+                            help: Displays help information for built-in shell commands.`
+        this.createMessage(helpMessage);
     }
     
 }
