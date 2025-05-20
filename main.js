@@ -1,169 +1,214 @@
-const inputElement = document.getElementById("input");
-const terminalElement = document.getElementsByClassName("terminal-container")[0];
 
-let currentPath = "user"
-
-const commandHistory = []
-let commandHistoryIndex = 0
-
-const ROOTPATH = {
-    "user" : {
-
+function base62RandomHash(length = 8) {
+    const base62Chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    let result = "";
+    for (let i = 0; i < length; i++) {
+        const index = Math.floor(Math.random() * 62);
+        result += base62Chars[index];
     }
+    return result;
 }
 
+class Terminal {
 
-const COMMANDS = {
-    "mkdir": function (folderName) {
-        const parentFolder = getCurrentPathLocation()
-        parentFolder[folderName] = {};
-    },
-
-    "cd": function( folderPath ) {
-        const parentFolder = getCurrentPathLocation()
+    constructor() {
+        this.id = base62RandomHash()
+        this.containerElement = document.createElement("div");
+        this.containerElement.classList.add('terminal-container');
+        document.body.append(this.containerElement)
+        this.containerElement.id = `terminal-container-${this.id}`
+        if (!this.containerElement) {
+            throw new Error(`Container ${containerSelector} not found`);
+        }
         
-        folderPath.split("/").forEach( folder => {
-            if (folder == "." ) {
-                return
+        this.currentPath = "user";
+        this.commandHistory = [];
+        this.commandHistoryIndex = 0;
+        
+        this.rootPath = {
+            "user": {}
+        };
+        
+        this.commands = {
+            "mkdir": (folderName) => this.mkdir(folderName),
+            "cd": (folderPath) => this.cd(folderPath),
+            "clear": () => this.clear(),
+            "ls": () => this.ls(),
+            "help": () => this.help()
+        };
+        
+        this.init();
+    }
+    
+    init() {
+        // Terminal HTML content
+  const terminalHTML = `
+        <div class="terminal-line">
+            Welcome to Webuntu v4.0.4 :P </br> ** Documentation: <a target='_blank' href='https://github.com/Andremzzr/web-terminal-js'>https://github.com/Andremzzr/web-terminal-js </a>
+        </div>
+        <div class="terminal-line">
+<pre>
+#   __     __  ______  ______  __  __  __       ______  ______  ______  __    __  __  __   __  ______  __        
+#  /\\ \\  _ \\ \\/\\  ___\\/\\  == \\/\\ \\/\\_\\_\\_\\     /\\__  _\\/\\  ___\\/\\  == \\/\\ "-./  \\/\\ \\/\\ "-.\\  \\/\\  __ \\/\\ \\       
+#  \\ \\ \\/ ".\\ \\ \\  __\\\\ \\  __<\\ \\ \\/_/\\_\\/_    \\/_/\\ \\/\\ \\  __\\\\ \\  __<\\ \\ \\-./\\ \\ \\ \\ \\ \\-.  \\ \\  __ \\ \\ \\____  
+#   \\ \\__/".\~\\_\\ \\_____\\ \\_____\\ \\_\\/\\_\\/\\_\\      \\ \\_\\ \\ \\_____\\ \\_\\ \\_\\ \\_\\ \\ \\_\\ \\_\\ \\_\\\\"\\_\\ \\_\\ \\_\\ \\_____\\ 
+#    \\/_/   \\/_/\\/_____/\\/_____/\\/_/\\/_/\\/_/       \\/_/  \\/_____/\\/_/ /_/\\/_/  \\/_/\\/_/\\/_/ \\/_/\\/_/\\/_/\\/_____/
+#</pre>
+        </div>
+  `;
+        
+        this.containerElement.innerHTML += terminalHTML;
+        this.createMessage('** Type "help" to see your commands.')
+        this.createNewLine();
+    }
+    
+    getCurrentPathLocation() {
+        return this.currentPath.split("/").reduce((current, key) => {
+            if (!current[key]) {
+                current[key] = {};
             }
-
-            if (folder == "..") {
-                currentPath = currentPath.split("/").slice(0, -1).join("/")
-                return
+            return current[key];
+        }, this.rootPath);
+    }
+    
+    executeInput(value) {
+        if (!value) return;
+        const input = value.split(" ");
+        const commandName = input[0];
+        const args = input.slice(1);
+        
+        const command = this.commands[commandName];
+        
+        if (!command) {
+            this.createMessage(`${commandName}: command not found.`);
+            this.createNewLine();
+            this.commandHistory.push(value);
+            this.commandHistoryIndex = this.commandHistory.length;
+            return;
+        }
+        
+        command(args[0]);
+        this.createNewLine();
+        this.commandHistory.push(value);
+        this.commandHistoryIndex = this.commandHistory.length;
+    }
+    
+    executeCommands(e) {
+        if (e.key === "Enter") {
+            this.executeInput(e.target.value);
+        } else if (e.key === "ArrowUp") {
+            if (this.commandHistory.length > 0 && this.commandHistoryIndex >= 1) {
+                this.commandHistoryIndex -= 1;
+                const inputs = this.containerElement.querySelectorAll('.input');
+                const lastInput = inputs[inputs.length - 1];
+                
+                lastInput.value = this.commandHistory[this.commandHistoryIndex] || "";
             }
-
-            if( parentFolder[folder] ) {
-                currentPath += `/${folder}`
+        } else if (e.key === "ArrowDown") {
+            if (this.commandHistory.length > 0 && this.commandHistoryIndex < this.commandHistory.length) {
+                this.commandHistoryIndex += 1;
+                const inputs = this.containerElement.querySelectorAll('.input');
+                const lastInput = inputs[inputs.length - 1];
+                lastInput.value = this.commandHistory[this.commandHistoryIndex] || "";
+            }
+        }
+    }
+    
+    disableLastInput() {
+        const inputs = this.containerElement.querySelectorAll('.input');
+        const lastInput = inputs[inputs.length - 1];
+        if (lastInput) {
+            lastInput.disabled = true;
+        }
+    }
+    
+    createMessage(message) {
+        const line = document.createElement('div');
+        line.className = 'terminal-line';
+        line.innerHTML = message;
+        this.containerElement.appendChild(line);
+    }
+    
+    createNewLine() {
+        this.disableLastInput();
+        const line = document.createElement('div');
+        line.className = 'terminal-line';
+        
+        const span = document.createElement('span');
+        span.className = 'dir-name';
+        span.innerHTML = this.currentPath;
+        
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.classList.add("input");
+        input.addEventListener("keydown", (e) => this.executeCommands(e));
+        
+        line.appendChild(span);
+        line.appendChild(input);
+        this.containerElement.appendChild(line);
+        input.focus();
+    }
+    
+    mkdir(folderName) {
+        if (!folderName) {
+            this.createMessage("mkdir: missing operand");
+            return;
+        }
+        const parentFolder = this.getCurrentPathLocation();
+        parentFolder[folderName] = {};
+    }
+    
+    cd(folderPath) {
+        if (!folderPath) {
+            this.currentPath = "user";
+            return;
+        }
+        
+        const originalPath = this.currentPath;
+        const parentFolder = this.getCurrentPathLocation();
+        
+        folderPath.split("/").forEach(folder => {
+            if (folder === ".") {
+                return;
             }
             
-        })
-    },
-
-    "clear": function () {
-        const lines = document.querySelectorAll(".terminal-line");
-        lines.forEach(line => line.remove());
-    },
-
-    "ls": function() {
-        const currentDirKeys = Object.keys(getCurrentPathLocation());
-        const container = document.getElementsByClassName('terminal-container')[0];
-        const line = document.createElement('div');
-        line.className = 'terminal-line';
-        line.innerHTML = currentDirKeys.length > 0 ? ".<br>..<br>" + currentDirKeys.join("<br>") : "no folders on this dir"
-        container.append(line)
-    },
-
-    "help": function() {
-        const commandsList = Object.keys(COMMANDS);
-        const container = document.getElementsByClassName('terminal-container')[0];
-        const line = document.createElement('div');
-        line.className = 'terminal-line';
-        line.innerHTML = commandsList.join("<br>") 
-        container.append(line)
-    }
-
-}
-
-
-function getCurrentPathLocation() {
-    return currentPath.split("/").reduce((current, key) => {
-        if (!current[key]) {
-            current[key] = {};
-        }
-        return current[key];
-    }, ROOTPATH);
-}
-
-function executeInput( value ) {
-    if ( !value ) return;
-    const input = value.split(" ")
-
-    const command = COMMANDS[input[0]];
-
-    if( !command ) {
-        createMessage(`${input[0]}: command not found.`)
-        createNewLine();
-        commandHistory.push(value)
-        commandHistoryIndex = commandHistory.length
-        return
-    }
-
-    command(input[1])
-    createNewLine()
-    commandHistory.push(value)
-    commandHistoryIndex = commandHistory.length
-
-    console.log(ROOTPATH)
-} 
-
-function executeCommands(e) { 
-    if (e.key == "Enter") {
-        executeInput(this.value)
-    }
-
-    if (e.key == "ArrowUp") {
-        if (commandHistory.length > 0 && commandHistoryIndex >= 1) {
-            commandHistoryIndex -= 1
-            const inputs = document.querySelectorAll('.input');
-            const lastInput = inputs[inputs.length - 1];
-
-            lastInput.value = commandHistory[commandHistoryIndex] ? commandHistory[commandHistoryIndex] : ""
-        }
-    }
-
-        if (e.key == "ArrowDown") {
-            if (commandHistory.length > 0 && commandHistoryIndex < commandHistory.length) {
-                commandHistoryIndex += 1
-                const inputs = document.querySelectorAll('.input');
-                const lastInput = inputs[inputs.length - 1];
-                lastInput.value = commandHistory[commandHistoryIndex] ? commandHistory[commandHistoryIndex] : ""
+            if (folder === "..") {
+                const pathParts = this.currentPath.split("/");
+                if (pathParts.length > 1) {
+                    this.currentPath = pathParts.slice(0, -1).join("/");
+                }
+                return;
             }
+            
+            if (parentFolder[folder]) {
+                this.currentPath += `/${folder}`;
+            } else {
+                this.createMessage(`cd: ${folder}: No such directory`);
+                this.currentPath = originalPath; 
+                return;
+            }
+        });
     }
-
-}
-function disableLastInput() {
-    const inputs = document.querySelectorAll('.input');
-    const lastInput = inputs[inputs.length - 1];
-    if ( lastInput ){
-        lastInput.disabled = true;
+    
+    clear() {
+        const lines = this.containerElement.querySelectorAll(".terminal-line");
+        lines.forEach(line => line.remove());
     }
-}
-
-function createMessage(message) {
-    const container = document.getElementsByClassName('terminal-container')[0];
-    const line = document.createElement('div');
-    line.className = 'terminal-line';
-    line.innerHTML = message
-    container.append(line)
-}
-
-function createNewLine() {
-    disableLastInput();
-    const container = document.getElementsByClassName('terminal-container')[0];
-    const line = document.createElement('div');
-    line.className = 'terminal-line';
-
-    const span = document.createElement('span');
-    span.className = 'dir-name';
-    span.innerHTML = currentPath;
-
-    const input = document.createElement('input');
-    input.type = 'text';
-    input.classList.add("input")
-    input.addEventListener("keydown", executeCommands);
-
-    line.appendChild(span);
-    line.appendChild(input);
-    container.appendChild(line);
-    input.focus()
-
+    
+    ls() {
+        const currentDirKeys = Object.keys(this.getCurrentPathLocation());
+        const content = currentDirKeys.length > 0 
+            ? ".<br>..<br>" + currentDirKeys.join("<br>") 
+            : "no folders in this directory";
+        this.createMessage(content);
+    }
+    
+    help() {
+        const commandsList = Object.keys(this.commands);
+        this.createMessage(commandsList.join("<br>"));
+    }
+    
 }
 
 
-
-inputElement.addEventListener("keydown", executeCommands );
-
-
-
-
-(() => { document.getElementsByClassName("dir-name")[0].innerHTML = currentPath; inputElement.focus() })();
+const terminal = new Terminal()
