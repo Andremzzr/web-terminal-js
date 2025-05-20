@@ -81,6 +81,7 @@ function executeInput( value ) {
     const command = COMMANDS[input[0]];
 
     if( !command ) {
+        createMessage(`${input[0]}: command not found.`)
         createNewLine();
         commandHistory.push(value)
         commandHistoryIndex = commandHistory.length
@@ -101,8 +102,9 @@ function executeCommands(e) {
     }
 
     if (e.key == "ArrowUp") {
-        if (commandHistory.length > 0) {
+        if (commandHistory.length > 0 ) {
             commandHistoryIndex -= 1
+            console.log(commandHistoryIndex)
             const inputs = document.querySelectorAll('.input');
             const lastInput = inputs[inputs.length - 1];
 
@@ -111,8 +113,9 @@ function executeCommands(e) {
     }
 
         if (e.key == "ArrowDown") {
-            if (commandHistory.length > 0 && commandHistoryIndex < commandHistory.length) {
+            if (commandHistory.length > 0 && commandHistoryIndex >= 0) {
                 commandHistoryIndex += 1
+                console.log(commandHistoryIndex)
                 const inputs = document.querySelectorAll('.input');
                 const lastInput = inputs[inputs.length - 1];
                 lastInput.value = commandHistory[commandHistoryIndex] ? commandHistory[commandHistoryIndex] : ""
@@ -126,6 +129,14 @@ function disableLastInput() {
     if ( lastInput ){
         lastInput.disabled = true;
     }
+}
+
+function createMessage(message) {
+    const container = document.getElementsByClassName('terminal-container')[0];
+    const line = document.createElement('div');
+    line.className = 'terminal-line';
+    line.innerHTML = message
+    container.append(line)
 }
 
 function createNewLine() {
