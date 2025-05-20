@@ -15,6 +15,10 @@ body {
     gap: 5px;
 }
 
+.terminal-line pre {
+    margin: 0;
+}
+
 
 .dir-name {
     margin-right: 5px;
