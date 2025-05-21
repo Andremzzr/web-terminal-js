@@ -110,6 +110,10 @@ class Terminal {
                 const lastInput = inputs[inputs.length - 1];
                 lastInput.value = this.commandHistory[this.commandHistoryIndex] || "";
             }
+        } else if (e.ctrlKey && (e.key === 'l' || e.key === 'L')) {
+            e.preventDefault()
+            this.clear()
+            this.createNewLine()
         }
     }
     
@@ -191,7 +195,9 @@ class Terminal {
     
     clear() {
         const lines = this.containerElement.querySelectorAll(".terminal-line");
-        lines.forEach(line => line.remove());
+        if(lines.length > 0) {
+            lines.forEach(line => line.remove());
+        }
     }
     
     ls() {
