@@ -292,5 +292,6 @@ osManager.appendTerminal(terminal, appendGuide)
 addNewTerminalButton.addEventListener("click", function() {
     const newTerminal = createTerminal(fileSystem)
     osManager.appendTerminal(newTerminal, appendGuide)
+    openTerminal(newTerminal.id)
 })
 
