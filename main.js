@@ -19,17 +19,21 @@ class OSManager {
     }
 
 
-    appendTerminal(terminal, callback) {
+    appendTerminal(terminal) {
         this.terminals[terminal.id] = terminal;
-        this.openTerminal(terminal.id)
         this.appendGuide(terminal.id);
+        this.openTerminal(terminal.id)
     }
 
     openTerminal(terminalId) {
+        if (terminalId == this.selected) return;
         if (this.selected) {
+            console.log(this.selected)
             document.getElementById(`terminal-container-${this.selected}`).style.display = "none";
+            document.querySelector(`div[terminal-id="${this.selected}"]`).style.backgroundColor = "#191919";
         }
         document.getElementById(`terminal-container-${terminalId}`).style.display = "flex";
+        document.querySelector(`div[terminal-id="${terminalId}"]`).style.cssText = "";
         this.selected = terminalId
     }
 
@@ -266,6 +270,7 @@ class Terminal {
 
 const osManager = new OSManager();
 const fileSystem = new FileSystem();
+
 const terminal = new Terminal(fileSystem)
 osManager.appendTerminal(terminal)
 
