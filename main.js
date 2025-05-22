@@ -28,7 +28,6 @@ class OSManager {
     openTerminal(terminalId) {
         if (terminalId == this.selected) return;
         if (this.selected) {
-            console.log(this.selected)
             document.getElementById(`terminal-container-${this.selected}`).style.display = "none";
             document.querySelector(`div[terminal-id="${this.selected}"]`).style.backgroundColor = "#191919";
         }
@@ -88,7 +87,8 @@ class Terminal {
             "cd": (folderPath) => this.cd(folderPath),
             "clear": () => this.clear(),
             "ls": () => this.ls(),
-            "help": () => this.help()
+            "help": () => this.help(),
+            "andre": () => this.andre()
         };
         
         this.init();
@@ -272,13 +272,18 @@ class Terminal {
             : "no folders in this directory";
         this.createMessage(content);
     }
+
+    andre() {
+        window.open('https://www.linkedin.com/in/andr%C3%A9-mezzalira-ribeiro-90ab0b1ba/', '_blank');
+    }
     
     help() {
         const helpMessage = `mkdir: Creates a new directory (folder) in the file system. <br>
                             cd: Changes the current working directory. It allows you to navigate through the file system by moving between directories.<br>
                             clear: Clears the terminal screen, removing all previously displayed content and giving you a clean workspace.<br>
                             ls: Lists the contents of the current directory (or a specified directory), showing files and subdirectories.<br>
-                            help: Displays help information for built-in shell commands.`
+                            help: Displays help information for built-in shell commands.<br>
+                            andre: Redirects to creators social media`
         this.createMessage(helpMessage);
     }
     
