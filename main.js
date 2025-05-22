@@ -1,4 +1,6 @@
 
+const addNewTerminalButton = document.getElementById("addNewTerminal");
+
 function base62RandomHash(length = 8) {
     const base62Chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
     let result = "";
@@ -9,25 +11,59 @@ function base62RandomHash(length = 8) {
     return result;
 }
 
+class OSManager {
+    
+    constructor() {
+        this.terminals = {};
+        this.selected = null;
+    }
+
+
+    appendTerminal(terminal, callback) {
+        this.terminals[terminal.id] = terminal;
+        this.selected = terminal.id
+        callback(terminal.id);
+    }
+
+    changeSelected() {
+
+    }
+
+    removeTerminal(terminal) {
+        return        
+    }
+
+}
+
+class FileSystem {
+
+    constructor(userName = 'user') {
+        this.currentPath = userName;
+        this.rootPath = {
+            userName: {}
+        };
+    }
+}
+
 class Terminal {
 
-    constructor() {
-        this.id = base62RandomHash()
+    constructor(fileSystem) {
+        this.id = base62RandomHash();
+        this.fileSystem = fileSystem;
         this.containerElement = document.createElement("div");
         this.containerElement.classList.add('terminal-container');
-        document.body.append(this.containerElement)
+
+
+        this.appContainer = document.getElementById("app-container")
+        this.appContainer.append(this.containerElement)
         this.containerElement.id = `terminal-container-${this.id}`
         if (!this.containerElement) {
             throw new Error(`Container ${containerSelector} not found`);
         }
         
-        this.currentPath = "user";
         this.commandHistory = [];
         this.commandHistoryIndex = 0;
         
-        this.rootPath = {
-            "user": {}
-        };
         
         this.commands = {
             "mkdir": (folderName) => this.mkdir(folderName),
@@ -62,12 +98,12 @@ class Terminal {
     }
     
     getCurrentPathLocation() {
-        return this.currentPath.split("/").reduce((current, key) => {
+        return this.fileSystem.currentPath.split("/").reduce((current, key) => {
             if (!current[key]) {
                 current[key] = {};
             }
             return current[key];
-        }, this.rootPath);
+        }, this.fileSystem.rootPath);
     }
     
     executeInput(value) {
@@ -139,7 +175,7 @@ class Terminal {
         
         const span = document.createElement('span');
         span.className = 'dir-name';
-        span.innerHTML = this.currentPath;
+        span.innerHTML = this.fileSystem.currentPath;
         
         const input = document.createElement('input');
         input.type = 'text';
@@ -163,11 +199,11 @@ class Terminal {
     
     cd(folderPath) {
         if (!folderPath) {
-            this.currentPath = "user";
+            this.fileSystem.currentPath = "user";
             return;
         }
         
-        const originalPath = this.currentPath;
+        const originalPath = this.fileSystem.currentPath;
         const parentFolder = this.getCurrentPathLocation();
         
         folderPath.split("/").forEach(folder => {
@@ -176,18 +212,18 @@ class Terminal {
             }
             
             if (folder === "..") {
-                const pathParts = this.currentPath.split("/");
+                const pathParts = this.fileSystem.currentPath.split("/");
                 if (pathParts.length > 1) {
-                    this.currentPath = pathParts.slice(0, -1).join("/");
+                    this.fileSystem.currentPath = pathParts.slice(0, -1).join("/");
                 }
                 return;
             }
             
             if (parentFolder[folder]) {
-                this.currentPath += `/${folder}`;
+                this.fileSystem.currentPath += `/${folder}`;
             } else {
                 this.createMessage(`cd: ${folder}: No such directory`);
-                this.currentPath = originalPath; 
+                this.fileSystem.currentPath = originalPath; 
                 return;
             }
         });
@@ -219,5 +255,42 @@ class Terminal {
     
 }
 
+function appendGuide(terminalId) {
+    const guide = document.createElement("div")
+    guide.classList.add("guide");
+    guide.setAttribute("terminal-id", terminalId)
+    guide.innerHTML = terminalId;
+    guide.addEventListener("click", (e) => openTerminal(terminalId));
 
-const terminal = new Terminal()
+    document.getElementById("terminal-header").append(guide)
+}
+
+function openTerminal(terminalId) {
+    const terminals = document.getElementsByClassName("terminal-container")
+    for (let tm of terminals) {
+        if( !tm.id.includes(terminalId)) {
+            tm.style.display = "none"
+        } else {
+            tm.style.display = "block"
+        }
+
+    }
+
+
+}
+
+
+function createTerminal(fileSystem) {
+   return new Terminal(fileSystem)
+}
+const osManager = new OSManager();
+const fileSystem = new FileSystem();
+
+const terminal = createTerminal(fileSystem)
+osManager.appendTerminal(terminal, appendGuide)
+
+addNewTerminalButton.addEventListener("click", function() {
+    const newTerminal = createTerminal(fileSystem)
+    osManager.appendTerminal(newTerminal, appendGuide)
+})
+
