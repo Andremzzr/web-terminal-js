@@ -279,4 +279,3 @@ addNewTerminalButton.addEventListener("click", function() {
     osManager.appendTerminal(newTerminal)
     osManager.openTerminal(newTerminal.id)
 })
-
