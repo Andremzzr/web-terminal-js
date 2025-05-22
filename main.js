@@ -34,7 +34,11 @@ class OSManager {
         }
         document.getElementById(`terminal-container-${terminalId}`).style.display = "flex";
         document.querySelector(`div[terminal-id="${terminalId}"]`).style.cssText = "";
-        this.selected = terminalId
+        this.selected = terminalId;
+
+        const inputs = this.terminals[terminalId].containerElement.querySelectorAll(".input")
+        const lastInput = inputs[inputs.length - 1];
+        lastInput.focus();
     }
 
     appendGuide(terminalId) {
@@ -154,6 +158,10 @@ class Terminal {
                 const lastInput = inputs[inputs.length - 1];
                 
                 lastInput.value = this.commandHistory[this.commandHistoryIndex] || "";
+                setTimeout(() => {
+                    lastInput.focus();
+                    lastInput.setSelectionRange(lastInput.value.length, lastInput.value.length);
+                }, 0);            
             }
         } else if (e.key === "ArrowDown") {
             if (this.commandHistory.length > 0 && this.commandHistoryIndex < this.commandHistory.length) {
@@ -161,6 +169,11 @@ class Terminal {
                 const inputs = this.containerElement.querySelectorAll('.input');
                 const lastInput = inputs[inputs.length - 1];
                 lastInput.value = this.commandHistory[this.commandHistoryIndex] || "";
+
+                setTimeout(() => {
+                    lastInput.focus();
+                    lastInput.setSelectionRange(lastInput.value.length, lastInput.value.length);
+                }, 0);
             }
         } else if (e.ctrlKey && (e.key === 'l' || e.key === 'L')) {
             e.preventDefault()
