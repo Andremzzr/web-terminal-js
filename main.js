@@ -21,16 +21,16 @@ class OSManager {
 
     appendTerminal(terminal, callback) {
         this.terminals[terminal.id] = terminal;
-        this.selected = terminal.id
+        this.openTerminal(terminal.id)
         callback(terminal.id);
     }
 
-    changeSelected() {
-
-    }
-
-    removeTerminal(terminal) {
-        return        
+    openTerminal(terminalId) {
+        if (this.selected) {
+            document.getElementById(`terminal-container-${this.selected}`).style.display = "none";
+        }
+        document.getElementById(`terminal-container-${terminalId}`).style.display = "flex";
+        this.selected = terminalId
     }
 
 }
@@ -260,23 +260,9 @@ function appendGuide(terminalId) {
     guide.classList.add("guide");
     guide.setAttribute("terminal-id", terminalId)
     guide.innerHTML = terminalId;
-    guide.addEventListener("click", (e) => openTerminal(terminalId));
+    guide.addEventListener("click", (e) => osManager.openTerminal(terminalId));
 
     document.getElementById("terminal-header").append(guide)
-}
-
-function openTerminal(terminalId) {
-    const terminals = document.getElementsByClassName("terminal-container")
-    for (let tm of terminals) {
-        if( !tm.id.includes(terminalId)) {
-            tm.style.display = "none"
-        } else {
-            tm.style.display = "block"
-        }
-
-    }
-
-
 }
 
 
@@ -292,6 +278,6 @@ osManager.appendTerminal(terminal, appendGuide)
 addNewTerminalButton.addEventListener("click", function() {
     const newTerminal = createTerminal(fileSystem)
     osManager.appendTerminal(newTerminal, appendGuide)
-    openTerminal(newTerminal.id)
+    osManager.openTerminal(newTerminal.id)
 })
 
