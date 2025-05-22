@@ -43,7 +43,7 @@ class OSManager {
         guide.setAttribute("terminal-id", terminalId)
         guide.innerHTML = terminalId;
         guide.addEventListener("click", (e) => this.openTerminal(terminalId));
-        document.getElementById("terminal-header").append(guide)
+        document.getElementById("tabs-container").append(guide)
     }
 
 }
@@ -60,9 +60,10 @@ class FileSystem {
 
 class Terminal {
 
-    constructor(fileSystem) {
+    constructor(fileSystem, welcomeMessage = false) {
         this.id = base62RandomHash();
         this.fileSystem = fileSystem;
+        this.welcomeMessage = welcomeMessage
         this.containerElement = document.createElement("div");
         this.containerElement.classList.add('terminal-container');
 
@@ -90,7 +91,8 @@ class Terminal {
     }
     
     init() {
-  const terminalHTML = `
+        if ( this.welcomeMessage) {
+        const terminalHTML = `
         <div class="terminal-line">
             Welcome to Webuntu v4.0.4 :P </br> ** Documentation: <a target='_blank' href='https://github.com/Andremzzr/web-terminal-js'>https://github.com/Andremzzr/web-terminal-js </a>
         </div>
@@ -106,7 +108,8 @@ class Terminal {
   `;
         
         this.containerElement.innerHTML += terminalHTML;
-        this.createMessage('** Type "help" to see your commands.')
+        this.createMessage('** Type "help" to see your commands.');
+        }
         this.createNewLine();
     }
     
@@ -271,7 +274,7 @@ class Terminal {
 const osManager = new OSManager();
 const fileSystem = new FileSystem();
 
-const terminal = new Terminal(fileSystem)
+const terminal = new Terminal(fileSystem, true)
 osManager.appendTerminal(terminal)
 
 addNewTerminalButton.addEventListener("click", function() {

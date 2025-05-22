@@ -26,13 +26,18 @@ body {
     display: flex;
     gap: 3px;
 
-    .guide {
-        padding: 5px;
-        background-color: rgb(30, 23, 50);
-        border-top-left-radius: 5px;
-        border-top-right-radius: 5px;
-        cursor: pointer;
+    #tabs-container {
+        display: flex;
+        gap: 3px;
+        .guide {
+            padding: 5px;
+            background-color: rgb(30, 23, 50);
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+            cursor: pointer;
+        }
     }
+
 
     button {
         color: black;
@@ -44,6 +49,12 @@ body {
             background-color: azure;
         }
     }
+}
+
+
+#app-container {
+    background-color: #191919;
+    border-radius: 5px;
 }
 
 
