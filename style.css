@@ -24,6 +24,7 @@ body {
 
 .terminal-header {
     display: flex;
+    gap: 3px;
 
     .guide {
         padding: 5px;
