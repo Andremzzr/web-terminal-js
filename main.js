@@ -31,6 +31,8 @@ class OSManager {
             document.getElementById(`terminal-container-${this.selected}`).style.display = "none";
             document.querySelector(`div[terminal-id="${this.selected}"]`).classList.remove("selected");
         }
+
+        console.log(document.getElementById(`terminal-container-${terminalId}`), terminalId)
         document.getElementById(`terminal-container-${terminalId}`).style.display = "flex";
         document.querySelector(`div[terminal-id="${terminalId}"]`).classList.add("selected");
         this.selected = terminalId;
@@ -41,12 +43,41 @@ class OSManager {
     }
 
     appendGuide(terminalId) {
-        const guide = document.createElement("div")
+        const guide = document.createElement("div");
+        const closeButton = document.createElement("button");
+        closeButton.addEventListener("click", (e) => {
+            e.stopPropagation();
+            this.removeTab(terminalId);
+        })        
+            closeButton.innerHTML = "X"
+
         guide.classList.add("guide");
         guide.setAttribute("terminal-id", terminalId)
         guide.innerHTML = terminalId;
-        guide.addEventListener("click", (e) => this.openTerminal(terminalId));
-        document.getElementById("tabs-container").append(guide)
+        guide.append(closeButton)
+        
+        guide.append()
+       guide.addEventListener("click", (e) => {
+            if (e.target !== closeButton) {
+                this.openTerminal(terminalId);
+            }
+        });        const tabContainer = document.getElementById("tabs-container");
+
+        tabContainer.append(guide)
+    }
+
+    removeTab(terminalId) {
+        const terminals = Object.keys(this.terminals).filter(key => key != terminalId);
+        if (terminals.length > 0 ) {
+            this.terminals[terminalId].containerElement.remove()
+            document.querySelector(`div[terminal-id="${terminalId}"]`).remove()
+            delete this.terminals[terminalId];
+
+            if(this.selected == terminalId) {
+                this.selected = null;
+                this.openTerminal(terminals[0])
+            }
+        }
     }
 
 }

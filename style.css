@@ -30,6 +30,8 @@ body {
         gap: 3px;
 
         .guide {
+            display: flex;
+            gap: 5px;
             padding: 5px;
             background-color: #191919 ;
             border-top-left-radius: 5px;
