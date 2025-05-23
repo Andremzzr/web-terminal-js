@@ -57,7 +57,7 @@ class OSManager {
         guide.append(closeButton)
         
         guide.append()
-       guide.addEventListener("click", (e) => {
+        guide.addEventListener("click", (e) => {
             if (e.target !== closeButton) {
                 this.openTerminal(terminalId);
             }
