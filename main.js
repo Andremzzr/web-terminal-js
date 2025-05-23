@@ -29,10 +29,10 @@ class OSManager {
         if (terminalId == this.selected) return;
         if (this.selected) {
             document.getElementById(`terminal-container-${this.selected}`).style.display = "none";
-            document.querySelector(`div[terminal-id="${this.selected}"]`).style.backgroundColor = "#191919";
+            document.querySelector(`div[terminal-id="${this.selected}"]`).classList.remove("selected");
         }
         document.getElementById(`terminal-container-${terminalId}`).style.display = "flex";
-        document.querySelector(`div[terminal-id="${terminalId}"]`).style.cssText = "";
+        document.querySelector(`div[terminal-id="${terminalId}"]`).classList.add("selected");
         this.selected = terminalId;
 
         const inputs = this.terminals[terminalId].containerElement.querySelectorAll(".input")
