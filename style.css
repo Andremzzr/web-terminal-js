@@ -24,6 +24,7 @@ body {
 .terminal-header {
     display: flex;
     gap: 3px;
+    padding: 10px 10px 0 10px;
 
     #tabs-container {
         display: flex;
@@ -37,6 +38,7 @@ body {
             border-top-left-radius: 5px;
             border-top-right-radius: 5px;
             cursor: pointer;
+            align-items: center;
         }
 
         .selected {
@@ -46,20 +48,18 @@ body {
 
 
     button {
-        color: black;
-        cursor: pointer;
-        border-top-left-radius: 5px;
-        border-top-right-radius: 5px;
-
+        cursor: pointer;    
+        background-color: transparent;
+        border: none;
         &:hover {
-            background-color: azure;
+            font-weight: bold;
         }
     }
 }
 
 
 #app-container {
-    background-color: #191919;
+    background-color: #494949;
     border-radius: 5px;
 }
 
