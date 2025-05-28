@@ -32,7 +32,6 @@ class OSManager {
             document.querySelector(`div[terminal-id="${this.selected}"]`).classList.remove("selected");
         }
 
-        console.log(document.getElementById(`terminal-container-${terminalId}`), terminalId)
         document.getElementById(`terminal-container-${terminalId}`).style.display = "flex";
         document.querySelector(`div[terminal-id="${terminalId}"]`).classList.add("selected");
         this.selected = terminalId;
@@ -344,7 +343,6 @@ function dragElement(elmnt) {
   }
 
   function dragMouseDown(e) {
-    e = e || window.event;
     e.preventDefault();
     pos3 = e.clientX;
     pos4 = e.clientY;
@@ -353,7 +351,6 @@ function dragElement(elmnt) {
   }
 
   function elementDrag(e) {
-    e = e || window.event;
     e.preventDefault();
     pos1 = pos3 - e.clientX;
     pos2 = pos4 - e.clientY;
